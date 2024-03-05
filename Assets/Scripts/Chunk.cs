@@ -14,7 +14,7 @@ public class Chunk {
 	private List<int> triangles;
 	private List<Vector2> uvs;
 
-	private byte[,,] voxelMap;
+	public byte[,,] voxelMap;
 
     private World world;
 

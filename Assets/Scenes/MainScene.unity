@@ -704,13 +704,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1565087593}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.17101006, y: 0.17101006, z: -0.030153684, w: 0.96984637}
-  m_LocalPosition: {x: -5, y: 15, z: -15}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.8, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 20, y: 20, z: 0}
+  m_Father: {fileID: 2057986618}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1565087597
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -799,9 +799,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e515468e385d25499f66f0376d9fd7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _seed: 1029510751
   biomes: {fileID: 11400000, guid: 952d240d3fdf5984095b8dc209935d37, type: 2}
-  player: {fileID: 1565087596}
+  player: {fileID: 2057986618}
   spawnPosition: {x: 0, y: 0, z: 0}
   material: {fileID: 2100000, guid: 21f6e1d2141a71747bd58aacdfd40868, type: 2}
   blockTypes:
@@ -869,6 +868,60 @@ MonoBehaviour:
     bottomFaceTexture: 3
     leftFaceTexture: 3
     rightFaceTexture: 3
+--- !u!1 &2057986617
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2057986618}
+  - component: {fileID: 2057986619}
+  m_Layer: 0
+  m_Name: Player
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2057986618
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2057986617}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1565087596}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2057986619
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2057986617}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e7ed108e4933ae4a97da7fcfe0ea89a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isGrounded: 0
+  isSprinting: 0
+  cam: {fileID: 1565087596}
+  world: {fileID: 1935775927}
+  walkSpeed: 4
+  sprintSpeed: 6
+  jumpForce: 5
+  gravity: -9.81
+  playerWidth: 0.3
 --- !u!1 &2117627046
 GameObject:
   m_ObjectHideFlags: 0
@@ -941,7 +994,7 @@ Transform:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 1565087596}
+  - {fileID: 2057986618}
   - {fileID: 1106990336}
   - {fileID: 1935775926}
   - {fileID: 1087798701}
