@@ -2,97 +2,118 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Chunk : MonoBehaviour{
-    public MeshRenderer meshRenderer;
-    public MeshFilter meshFilter;
+public class Chunk : MonoBehaviour {
 
-    int vertexIndex;
-    List<Vector3> vertices;
-    List<int> triangles;
-    List<Vector2> uvs;
+	public MeshRenderer meshRenderer;
+	public MeshFilter meshFilter;
 
-    bool[,,] voxelMap;
+	int vertexIndex = 0;
+	List<Vector3> vertices;
+	List<int> triangles;
+	List<Vector2> uvs;
 
-    public void Start() {
-        vertexIndex = 0;
+	byte[,,] voxelMap;
+
+    World world;
+
+	void Start() {
         vertices = new List<Vector3>();
         triangles = new List<int>();
         uvs = new List<Vector2>();
 
-        voxelMap = new bool[VoxelData.chunkWidth, VoxelData.chunkHeight, VoxelData.chunkWidth];
+        voxelMap = new byte[VoxelData.chunkWidth, VoxelData.chunkHeight, VoxelData.chunkWidth];
 
-        PopulateVoxelMap();
+        world = GameObject.Find("World").GetComponent<World>();
 
-        CreateMeshData();
+		PopulateVoxelMap();
+		CreateMeshData();
+		CreateMesh();
+	}
 
-        CreateMesh();
-    }
+	void PopulateVoxelMap() {
+		for(int y = 0; y < VoxelData.chunkHeight; y++) {
+			for(int x = 0; x < VoxelData.chunkWidth; x++) {
+				for(int z = 0; z < VoxelData.chunkWidth; z++) {
+                    if(y < 1) {
+                        voxelMap[x, y, z] = 0; // Bedrock
+                    } else if(y == VoxelData.chunkHeight - 1) {
+                        voxelMap[x, y, z] = 2; // Grass
+                    } else {
+                        voxelMap [x, y, z] = 1; // Stone
+                    }
+				}
+			}
+		}
+	}
 
-    private void PopulateVoxelMap() {
-        for (int y = 0; y < VoxelData.chunkHeight; y++) {
-            for (int x = 0; x < VoxelData.chunkWidth; x++) {
-                for (int z = 0; z < VoxelData.chunkWidth; z++) {
-                    voxelMap[x, y, z] = true;
-                }
-            }
+	void CreateMeshData() {
+		for(int y = 0; y < VoxelData.chunkHeight; y++) {
+			for(int x = 0; x < VoxelData.chunkWidth; x++) {
+				for(int z = 0; z < VoxelData.chunkWidth; z++) {
+					AddVoxelDataToChunk(new Vector3(x, y, z));
+				}
+			}
+		}
+	}
+
+	bool CheckVoxel(Vector3 pos) {
+		int x = Mathf.FloorToInt(pos.x);
+		int y = Mathf.FloorToInt(pos.y);
+		int z = Mathf.FloorToInt(pos.z);
+
+		if(x < 0 || x > VoxelData.chunkWidth - 1 || y < 0 || y > VoxelData.chunkHeight - 1 || z < 0 || z > VoxelData.chunkWidth - 1) {
+			return false;
         }
-    }
 
-    private void CreateMeshData() {
-        for (int y = 0; y < VoxelData.chunkHeight; y++) {
-            for (int x = 0; x < VoxelData.chunkWidth; x++) {
-                for (int z = 0; z < VoxelData.chunkWidth; z++) {
-                    AddVoxelDataToChunk(new Vector3(x, y, z));
-                }
-            }
-        }
-    }
+		return world.blockTypes[voxelMap [x, y, z]].isSolid;
+	}
 
-    private bool CheckVoxel(Vector3 pos) {
-        int x = Mathf.FloorToInt(pos.x);
-        int y = Mathf.FloorToInt(pos.y);
-        int z = Mathf.FloorToInt(pos.z);
+	void AddVoxelDataToChunk(Vector3 pos) {
+		for(int p = 0; p < 6; p++) { 
+			if(!CheckVoxel(pos + VoxelData.faceChecks[p])) {
+                byte blockID = voxelMap[(int)pos.x,(int)pos.y,(int)pos.z];
 
-        if (x < 0 || x > VoxelData.chunkWidth - 1 || y < 0 || y > VoxelData.chunkHeight - 1 || z < 0 || z > VoxelData.chunkWidth - 1) {
-            return false;
-        }
+				vertices.Add(pos + VoxelData.voxelVerts [VoxelData.voxelTris [p, 0]]);
+				vertices.Add(pos + VoxelData.voxelVerts [VoxelData.voxelTris [p, 1]]);
+				vertices.Add(pos + VoxelData.voxelVerts [VoxelData.voxelTris [p, 2]]);
+				vertices.Add(pos + VoxelData.voxelVerts [VoxelData.voxelTris [p, 3]]);
 
-        return voxelMap[x, y, z];
-    }
+                AddTexture(world.blockTypes[blockID].GetTextureID(p));
 
-    private void AddVoxelDataToChunk( Vector3 position ) {
-        for (int i = 0; i < 6; i++) {
-            if (!CheckVoxel(position + VoxelData.faceChecks[i])) {
-                vertices.Add(position + VoxelData.voxelVerts[VoxelData.voxelTris[i, 0]]);
-                vertices.Add(position + VoxelData.voxelVerts[VoxelData.voxelTris[i, 1]]);
-                vertices.Add(position + VoxelData.voxelVerts[VoxelData.voxelTris[i, 2]]);
-                vertices.Add(position + VoxelData.voxelVerts[VoxelData.voxelTris[i, 3]]);
+				triangles.Add(vertexIndex);
+				triangles.Add(vertexIndex + 1);
+				triangles.Add(vertexIndex + 2);
+				triangles.Add(vertexIndex + 2);
+				triangles.Add(vertexIndex + 1);
+				triangles.Add(vertexIndex + 3);
+				vertexIndex += 4;
+			}
+		}
+	}
 
-                triangles.Add(vertexIndex);
-                triangles.Add(vertexIndex + 1);
-                triangles.Add(vertexIndex + 2);
-                triangles.Add(vertexIndex + 2);
-                triangles.Add(vertexIndex + 1);
-                triangles.Add(vertexIndex + 3);
+	void CreateMesh() {
+		Mesh mesh = new Mesh();
+		mesh.vertices = vertices.ToArray();
+		mesh.triangles = triangles.ToArray();
+		mesh.uv = uvs.ToArray();
 
-                uvs.Add(VoxelData.voxelUvs[0]);
-                uvs.Add(VoxelData.voxelUvs[1]);
-                uvs.Add(VoxelData.voxelUvs[2]);
-                uvs.Add(VoxelData.voxelUvs[3]);
+		mesh.RecalculateNormals();
 
-                vertexIndex += 4;
-            }
-        }
-    }
+		meshFilter.mesh = mesh;
+	}
 
-    private void CreateMesh() {
-        Mesh mesh = new Mesh();
-        mesh.vertices = vertices.ToArray();
-        mesh.triangles = triangles.ToArray();
-        mesh.uv = uvs.ToArray();
+    void AddTexture(int textureID) {
+        float y = textureID / VoxelData.textureAtlasSizeInBlocks;
+        float x = textureID -(y * VoxelData.textureAtlasSizeInBlocks);
 
-        mesh.RecalculateNormals(); // This is important for lighting to work correctly
+        x *= VoxelData.normalizedBlockTextureSize;
+        y *= VoxelData.normalizedBlockTextureSize;
 
-        meshFilter.mesh = mesh;
+        y = 1f - y - VoxelData.normalizedBlockTextureSize;
+
+        uvs.Add(new Vector2(x, y));
+        uvs.Add(new Vector2(x, y + VoxelData.normalizedBlockTextureSize));
+        uvs.Add(new Vector2(x + VoxelData.normalizedBlockTextureSize, y));
+        uvs.Add(new Vector2(x + VoxelData.normalizedBlockTextureSize, y + VoxelData.normalizedBlockTextureSize));
     }
 }
