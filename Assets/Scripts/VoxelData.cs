@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public static class VoxelData {
-    public static readonly int chunkWidth = 5;
-    public static readonly int chunkHeight = 15;
-    public static readonly int worldSizeInChunks = 100;
+    public static readonly int chunkWidth = 16;
+    public static readonly int chunkHeight = 128;
+    public static readonly int worldSizeInChunks = 20;
     public static int worldSizeInVoxels {
         get { return worldSizeInChunks * chunkWidth; }
     }
