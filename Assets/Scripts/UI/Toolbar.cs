@@ -22,26 +22,30 @@ public class Toolbar : MonoBehaviour {
             slot.icon.sprite = world.blockTypes[slot.itemID].icon;
             slot.icon.enabled = true;
         }
+
+        player.selectedBlockIndex = itemSlots[slotIndex].itemID;
     }
 
     private void Update() {
         float scroll = Input.GetAxis("Mouse ScrollWheel");
 
         if (scroll != 0) {
-
-            if (scroll > 0)
+            if (scroll > 0) {
                 slotIndex--;
-            else
+            } else {
                 slotIndex++;
+            }
 
-            if (slotIndex > itemSlots.Length - 1)
+            if (slotIndex > itemSlots.Length - 1) {
                 slotIndex = 0;
-            if (slotIndex < 0)
+            }
+            
+            if (slotIndex < 0) {
                 slotIndex = itemSlots.Length - 1;
-
+            }
+            
             highlight.position = itemSlots[slotIndex].icon.transform.position;
             player.selectedBlockIndex = itemSlots[slotIndex].itemID;
-
         }
     }
 }
