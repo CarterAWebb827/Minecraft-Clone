@@ -12,7 +12,7 @@ public static class VoxelData {
 
     public static readonly int viewDistanceInChunks = 5;
 
-    public static readonly int textureAtlasSizeInBlocks = 4; // 4x4 (16) textures in the atlas
+    public static readonly int textureAtlasSizeInBlocks = 16; // 16x16 (256) textures in the atlas
     public static float normalizedBlockTextureSize {
         get { return 1f / (float)textureAtlasSizeInBlocks; }
     }

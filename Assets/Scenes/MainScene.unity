@@ -2705,6 +2705,16 @@ MonoBehaviour:
     bottomFaceTexture: 8
     leftFaceTexture: 8
     rightFaceTexture: 8
+  - blockName: Leave
+    isSolid: 1
+    isTransparent: 1
+    icon: {fileID: -856441910, guid: 497e96827c6038e48bac7660e70351d1, type: 3}
+    backFaceTexture: 16
+    frontFaceTexture: 16
+    topFaceTexture: 16
+    bottomFaceTexture: 16
+    leftFaceTexture: 16
+    rightFaceTexture: 16
   debugScreen: {fileID: 866285006}
 --- !u!1 &2057986617
 GameObject:
